@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import httpStatus from 'http-status';
@@ -11,15 +12,19 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  mobileNumber: {
+  password: {
     type: String,
-    required: true,
-    match: [/^[1-9][0-9]{9}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.']
+    required: true
   },
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  sharedProjects: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+    default: []
+  }],
 });
 
 /**
@@ -28,6 +33,28 @@ const UserSchema = new mongoose.Schema({
  * - validations
  * - virtuals
  */
+
+// eslint-disable-next-line func-names, prefer-arrow-callback
+UserSchema.pre('save', function (next) {
+  const self = this;
+
+  if (!self.isModified('password')) {
+    next();
+    return;
+  }
+
+  bcrypt.hash(self.password, 16.5, (error, hash) => {
+    console.log(error);
+    console.log(hash);
+    if (error) {
+      next(error);
+      return;
+    }
+
+    self.password = hash;
+    next();
+  });
+});
 
 /**
  * Methods

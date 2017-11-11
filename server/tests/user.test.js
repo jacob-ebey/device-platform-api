@@ -24,7 +24,7 @@ describe('## User APIs', () => {
   };
 
   describe('# POST /api/users', () => {
-    it('should create a new user', (done) => {
+    xit('should create a new user', (done) => {
       request(app)
         .post('/api/users')
         .send(user)
@@ -40,7 +40,7 @@ describe('## User APIs', () => {
   });
 
   describe('# GET /api/users/:userId', () => {
-    it('should get user details', (done) => {
+    xit('should get user details', (done) => {
       request(app)
         .get(`/api/users/${user._id}`)
         .expect(httpStatus.OK)
@@ -65,7 +65,7 @@ describe('## User APIs', () => {
   });
 
   describe('# PUT /api/users/:userId', () => {
-    it('should update user details', (done) => {
+    xit('should update user details', (done) => {
       user.username = 'KK';
       request(app)
         .put(`/api/users/${user._id}`)
@@ -106,7 +106,7 @@ describe('## User APIs', () => {
   });
 
   describe('# DELETE /api/users/', () => {
-    it('should delete user', (done) => {
+    xit('should delete user', (done) => {
       request(app)
         .delete(`/api/users/${user._id}`)
         .expect(httpStatus.OK)
