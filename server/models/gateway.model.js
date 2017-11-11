@@ -5,7 +5,7 @@ import APIError from '../helpers/APIError';
 /**
  * User Schema
  */
-const ProjectSchema = new mongoose.Schema({
+const GatewaySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
@@ -20,7 +20,6 @@ const ProjectSchema = new mongoose.Schema({
     default: Date.now
   },
   sharedWith: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  gateways: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Gateway' }],
 });
 
 /**
@@ -33,13 +32,13 @@ const ProjectSchema = new mongoose.Schema({
 /**
  * Methods
  */
-ProjectSchema.method({
+GatewaySchema.method({
 });
 
 /**
  * Statics
  */
-ProjectSchema.statics = {
+GatewaySchema.statics = {
   /**
    * Get project
    * @param {ObjectId} id - The objectId of project.
@@ -47,19 +46,18 @@ ProjectSchema.statics = {
    */
   get(id) {
     return this.findById(id)
-      .populate('ownedBy', 'username')
       .exec()
-      .then((project) => {
-        if (project) {
-          return project;
+      .then((gateway) => {
+        if (gateway) {
+          return gateway;
         }
-        const err = new APIError('No such project exists!', httpStatus.NOT_FOUND);
+        const err = new APIError('No such gateway exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
       });
   },
 };
 
 /**
- * @typedef Project
+ * @typedef Gateway
  */
-export default mongoose.model('Project', ProjectSchema);
+export default mongoose.model('Project', GatewaySchema);

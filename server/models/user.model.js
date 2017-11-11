@@ -20,9 +20,24 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  ownedProjects: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+    default: []
+  }],
   sharedProjects: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
+    default: []
+  }],
+  ownedGateways: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Gateway',
+    default: []
+  }],
+  sharedGateways: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Gateway',
     default: []
   }],
 });
@@ -80,6 +95,22 @@ UserSchema.statics = {
         }
         const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
+      });
+  },
+
+  getProjects(id, callback) {
+    this.findById(id)
+      .populate('ownedProjects sharedProjects')
+      .exec((err, result) => {
+        callback(err, err ? null : [...result.ownedProjects, ...result.sharedProjects]);
+      });
+  },
+
+  getGateways(id, callback) {
+    this.findById(id)
+      .populate('ownedGateways sharedGateways')
+      .exec((err, result) => {
+        callback(err, err ? null : [...result.ownedGateways, ...result.sharedGateways]);
       });
   },
 
