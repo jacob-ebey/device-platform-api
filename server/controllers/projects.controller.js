@@ -1,3 +1,5 @@
+import httpStatus from 'http-status';
+import APIError from '../helpers/APIError';
 import User from '../models/user.model';
 import Gateway from '../models/gateway.model';
 import Project from '../models/project.model';
@@ -71,7 +73,7 @@ function addProject(req, res, next) {
  * @param next
  * @returns {*}
  */
-function addGateway(req, res, next) {
+function addGatewayToProject(req, res, next) {
   Project.get(req.params.projectId)
     .then((project) => {
       Gateway.get(req.params.gatewayId)
@@ -89,4 +91,31 @@ function addGateway(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { get, getAll, addProject, addGateway };
+
+/**
+ * Delete a project
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function deleteProject(req, res, next) {
+  Project
+    .findById(req.params.id)
+    .exec()
+    .then((project) => {
+      if (String(project.ownedBy) === String(req.user._id)) {
+        project.remove()
+          .then(() => {
+            res.json(true);
+          })
+          .catch(e => next(e));
+      } else {
+        const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
+        next(err);
+      }
+    })
+    .catch(e => next(e));
+}
+
+export default { get, getAll, addProject, addGatewayToProject, deleteProject };

@@ -34,6 +34,12 @@ export default {
     }
   },
 
+  deleteProject: {
+    params: {
+      id: Joi.string().required()
+    }
+  },
+
   addGatewayToProject: {
     params: {
       projectId: Joi.string().required(),
