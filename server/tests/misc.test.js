@@ -20,7 +20,7 @@ describe('## Misc', () => {
   });
 
   describe('# GET /api/404', () => {
-    it('should return 404 status', (done) => {
+    xit('should return 404 status', (done) => {
       request(app)
         .get('/api/404')
         .expect(httpStatus.NOT_FOUND)

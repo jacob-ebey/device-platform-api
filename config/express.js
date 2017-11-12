@@ -1,3 +1,4 @@
+import path from 'path';
 import express from 'express';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
@@ -63,6 +64,11 @@ app.use((err, req, res, next) => {
   return next(err);
 });
 
+const DIST_DIR = path.join(__dirname, '../', 'static');
+const HTML_FILE = path.join(DIST_DIR, 'index.html');
+app.use(express.static(DIST_DIR));
+app.get('*', (req, res) => res.sendFile(HTML_FILE));
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new APIError('API not found', httpStatus.NOT_FOUND);
@@ -83,5 +89,6 @@ app.use((err, req, res, next) => // eslint-disable-line no-unused-vars
     stack: config.env === 'development' ? err.stack : {}
   })
 );
+
 
 export default app;
