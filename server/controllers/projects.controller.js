@@ -91,7 +91,6 @@ function addGatewayToProject(req, res, next) {
     .catch(e => next(e));
 }
 
-
 /**
  * Delete a project
  * @param req

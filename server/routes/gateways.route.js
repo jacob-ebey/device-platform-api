@@ -22,4 +22,11 @@ router.route('/')
     validate(paramValidation.addGateway),
     gatewaysCtrl.addGateway);
 
+/** DELETE /api/gateways/:id - Delete a gateway */
+router.route('/:id')
+  .delete(
+    expressJwt({ secret: config.jwtSecret }),
+    validate(paramValidation.deleteProject),
+    gatewaysCtrl.deleteGateway);
+
 export default router;

@@ -1,5 +1,6 @@
 import generator from 'generate-password';
-
+import httpStatus from 'http-status';
+import APIError from '../helpers/APIError';
 import User from '../models/user.model';
 import Gateway from '../models/gateway.model';
 
@@ -70,4 +71,30 @@ function addGateway(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { get, getAll, addGateway };
+/**
+ * Delete a project
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function deleteGateway(req, res, next) {
+  Gateway
+    .findById(req.params.id)
+    .exec()
+    .then((gateway) => {
+      if (String(gateway.ownedBy) === String(req.user._id)) {
+        gateway.remove()
+          .then(() => {
+            res.json(true);
+          })
+          .catch(e => next(e));
+      } else {
+        const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
+        next(err);
+      }
+    })
+    .catch(e => next(e));
+}
+
+export default { get, getAll, addGateway, deleteGateway };
