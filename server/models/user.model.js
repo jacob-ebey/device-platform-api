@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import httpStatus from 'http-status';
@@ -11,15 +12,34 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  mobileNumber: {
+  password: {
     type: String,
-    required: true,
-    match: [/^[1-9][0-9]{9}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.']
+    required: true
   },
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  ownedProjects: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+    default: []
+  }],
+  sharedProjects: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+    default: []
+  }],
+  ownedGateways: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Gateway',
+    default: []
+  }],
+  sharedGateways: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Gateway',
+    default: []
+  }],
 });
 
 /**
@@ -28,6 +48,28 @@ const UserSchema = new mongoose.Schema({
  * - validations
  * - virtuals
  */
+
+// eslint-disable-next-line func-names, prefer-arrow-callback
+UserSchema.pre('save', function (next) {
+  const self = this;
+
+  if (!self.isModified('password')) {
+    next();
+    return;
+  }
+
+  bcrypt.hash(self.password, 16.5, (error, hash) => {
+    console.log(error);
+    console.log(hash);
+    if (error) {
+      next(error);
+      return;
+    }
+
+    self.password = hash;
+    next();
+  });
+});
 
 /**
  * Methods
@@ -44,8 +86,9 @@ UserSchema.statics = {
    * @param {ObjectId} id - The objectId of user.
    * @returns {Promise<User, APIError>}
    */
-  get(id) {
+  get(id, populate = 'username password') {
     return this.findById(id)
+      .populate(populate)
       .exec()
       .then((user) => {
         if (user) {
@@ -53,6 +96,22 @@ UserSchema.statics = {
         }
         const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
+      });
+  },
+
+  getProjects(id, callback) {
+    this.findById(id)
+      .populate('ownedProjects sharedProjects')
+      .exec((err, result) => {
+        callback(err, err ? null : [...result.ownedProjects, ...result.sharedProjects]);
+      });
+  },
+
+  getGateways(id, callback) {
+    this.findById(id)
+      .populate('ownedGateways sharedGateways')
+      .exec((err, result) => {
+        callback(err, err ? null : [...result.ownedGateways, ...result.sharedGateways]);
       });
   },
 

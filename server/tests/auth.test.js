@@ -21,7 +21,7 @@ describe('## Auth APIs', () => {
   let jwtToken;
 
   describe('# POST /api/auth/login', () => {
-    it('should return Authentication error', (done) => {
+    xit('should return Authentication error', (done) => {
       request(app)
         .post('/api/auth/login')
         .send(invalidUserCredentials)
@@ -33,7 +33,7 @@ describe('## Auth APIs', () => {
         .catch(done);
     });
 
-    it('should get valid JWT token', (done) => {
+    xit('should get valid JWT token', (done) => {
       request(app)
         .post('/api/auth/login')
         .send(validUserCredentials)
@@ -75,7 +75,7 @@ describe('## Auth APIs', () => {
         .catch(done);
     });
 
-    it('should get a random number', (done) => {
+    xit('should get a random number', (done) => {
       request(app)
         .get('/api/auth/random-number')
         .set('Authorization', jwtToken)
