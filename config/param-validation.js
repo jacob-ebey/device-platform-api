@@ -34,6 +34,13 @@ export default {
     }
   },
 
+  addGatewayToProject: {
+    params: {
+      projectId: Joi.string().required(),
+      gatewayId: Joi.string().required()
+    }
+  },
+
   addGateway: {
     body: {
       name: Joi.string().required()

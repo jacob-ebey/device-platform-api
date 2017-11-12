@@ -48,6 +48,7 @@ ProjectSchema.statics = {
   get(id) {
     return this.findById(id)
       .populate('ownedBy', 'username')
+      .populate('gateways')
       .exec()
       .then((project) => {
         if (project) {

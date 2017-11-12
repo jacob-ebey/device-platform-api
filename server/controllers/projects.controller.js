@@ -1,4 +1,5 @@
 import User from '../models/user.model';
+import Gateway from '../models/gateway.model';
 import Project from '../models/project.model';
 
 /**
@@ -63,4 +64,29 @@ function addProject(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { get, getAll, addProject };
+/**
+ * Create a gateway to a project
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function addGateway(req, res, next) {
+  Project.get(req.params.projectId)
+    .then((project) => {
+      Gateway.get(req.params.gatewayId)
+        .then((gateway) => {
+          project.gateways.push(gateway._id);
+
+          project.save()
+            .then(() => {
+              res.json(gateway);
+            })
+            .catch(e => next(e));
+        })
+        .catch(e => next(e));
+    })
+    .catch(e => next(e));
+}
+
+export default { get, getAll, addProject, addGateway };

@@ -22,4 +22,10 @@ router.route('/')
     validate(paramValidation.addProject),
     projectsCtrl.addProject);
 
+router.route('/:projectId/:gatewayId')
+  .post(
+    expressJwt({ secret: config.jwtSecret }),
+    validate(paramValidation.addGatewayToProject),
+    projectsCtrl.addGateway);
+
 export default router;
