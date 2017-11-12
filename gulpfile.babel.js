@@ -63,3 +63,9 @@ gulp.task('default', ['clean'], () => {
     ['copy', 'babel']
   );
 });
+
+gulp.task('production', ['clean'], () => {
+  runSequence(
+    ['copy', 'babel']
+  );
+});
