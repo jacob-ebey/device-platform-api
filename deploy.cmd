@@ -1,5 +1,5 @@
 npm install
 
-node_modules/.bin/gulp
+BABEL_DISABLE_CACHE=1 node_modules/.bin/gulp
 
 node dist/index.js
