@@ -29,6 +29,13 @@ router.route('/:projectId/:gatewayId')
     validate(paramValidation.addGatewayToProject),
     projectsCtrl.addGatewayToProject);
 
+/** DELETE /api/projects/:projectId/:gatewayId - Remove a gateway from a project */
+router.route('/:projectId/:gatewayId')
+  .delete(
+    expressJwt({ secret: config.jwtSecret }),
+    validate(paramValidation.addGatewayToProject),
+    projectsCtrl.removeGatewayFromProject);
+
 /** DELETE /api/projects/:id - Delete a project */
 router.route('/:id')
   .delete(

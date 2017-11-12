@@ -92,6 +92,27 @@ function addGatewayToProject(req, res, next) {
 }
 
 /**
+ * Create a gateway to a project
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function removeGatewayFromProject(req, res, next) {
+  Project.get(req.params.projectId)
+    .then((project) => {
+      Project
+        .update({ _id: project._id }, { $pullAll: { gateways: [req.params.gatewayId] } })
+        .exec()
+        .then(() => {
+          res.json(true);
+        })
+        .catch(e => next(e));
+    })
+    .catch(e => next(e));
+}
+
+/**
  * Delete a project
  * @param req
  * @param res
@@ -117,4 +138,11 @@ function deleteProject(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { get, getAll, addProject, addGatewayToProject, deleteProject };
+export default {
+  get,
+  getAll,
+  addProject,
+  addGatewayToProject,
+  removeGatewayFromProject,
+  deleteProject
+};
