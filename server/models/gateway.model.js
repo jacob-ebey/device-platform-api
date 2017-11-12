@@ -10,6 +10,12 @@ const GatewaySchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  iotId: {
+    type: String
+  },
+  registrationCode: {
+    type: String
+  },
   ownedBy: {
     required: true,
     type: mongoose.Schema.Types.ObjectId,
@@ -46,6 +52,7 @@ GatewaySchema.statics = {
    */
   get(id) {
     return this.findById(id)
+      .populate('ownedBy', 'username')
       .exec()
       .then((gateway) => {
         if (gateway) {
@@ -60,4 +67,4 @@ GatewaySchema.statics = {
 /**
  * @typedef Gateway
  */
-export default mongoose.model('Project', GatewaySchema);
+export default mongoose.model('Gateway', GatewaySchema);

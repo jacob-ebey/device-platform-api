@@ -86,8 +86,9 @@ UserSchema.statics = {
    * @param {ObjectId} id - The objectId of user.
    * @returns {Promise<User, APIError>}
    */
-  get(id) {
+  get(id, populate = 'username password') {
     return this.findById(id)
+      .populate(populate)
       .exec()
       .then((user) => {
         if (user) {

@@ -2143,6 +2143,10 @@ generate-object-property@^1.1.0:
   dependencies:
     is-property "^1.0.0"
 
+generate-password@false1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/generate-password/-/generate-password-1.3.0.tgz#4da4c154530d21c1995a77aac5a3ea04882fc8ad"
+
 getpass@^0.1.1:
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/getpass/-/getpass-0.1.6.tgz#283ffd9fc1256840875311c1b60e8c40187110e6"

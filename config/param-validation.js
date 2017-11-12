@@ -33,4 +33,10 @@ export default {
       name: Joi.string().required()
     }
   },
+
+  addGateway: {
+    body: {
+      name: Joi.string().required()
+    }
+  },
 };

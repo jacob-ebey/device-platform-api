@@ -41,7 +41,7 @@ function getAll(req, res, next) {
  * @returns {*}
  */
 function addProject(req, res, next) {
-  User.get(req.user._id)
+  User.get(req.user._id, 'ownedProjects')
     .then((user) => {
       const project = new Project({
         name: req.body.name,
