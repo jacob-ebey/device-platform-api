@@ -6,8 +6,9 @@
   "main": "index.js",
   "private": false,
   "scripts": {
-    "start": "gulp serve",
+    "start:prod": "gulp serve",
     "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* yarn start",
+    "postinstall": "gulp serve",
     "build": "gulp",
     "lint": "esw *.js server config --color",
     "lint:watch": "yarn lint -- --watch",
