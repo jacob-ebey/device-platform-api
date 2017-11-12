@@ -6,7 +6,7 @@
   "main": "index.js",
   "private": false,
   "scripts": {
-    "start": "gulp serve",
+    "start": "node dist/index.js",
     "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* yarn start",
     "build": "gulp",
     "lint": "esw *.js server config --color",
