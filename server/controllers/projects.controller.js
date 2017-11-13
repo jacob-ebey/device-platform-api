@@ -67,7 +67,7 @@ function addProject(req, res, next) {
 }
 
 /**
- * Create a gateway to a project
+ * Add a gateway to a project
  * @param req
  * @param res
  * @param next

@@ -52,4 +52,10 @@ export default {
       name: Joi.string().required()
     }
   },
+
+  addConfiguration: {
+    body: {
+      name: Joi.string().required()
+    }
+  }
 };
