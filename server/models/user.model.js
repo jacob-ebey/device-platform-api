@@ -40,6 +40,16 @@ const UserSchema = new mongoose.Schema({
     ref: 'Gateway',
     default: []
   }],
+  ownedConfigurations: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Configuration',
+    default: []
+  }],
+  sharedConfigurations: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Configuration',
+    default: []
+  }],
 });
 
 /**
@@ -112,6 +122,14 @@ UserSchema.statics = {
       .populate('ownedGateways sharedGateways')
       .exec((err, result) => {
         callback(err, err ? null : [...result.ownedGateways, ...result.sharedGateways]);
+      });
+  },
+
+  getConfigurations(id, callback) {
+    this.findById(id)
+      .populate('ownedConfigurations sharedConfigurations')
+      .exec((err, result) => {
+        callback(err, err ? null : [...result.ownedConfigurations, ...result.sharedConfigurations]);
       });
   },
 
