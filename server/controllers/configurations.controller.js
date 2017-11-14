@@ -96,15 +96,72 @@ function removeDeviceFromConfiguration(req, res, next) {
   Configuration.get(req.params.configId)
     .then((configuration) => {
       if (String(configuration.ownedBy._id) === String(req.user._id)) {
-        Configuration
-          .update(
-            { _id: req.params.configId },
-            { $pullAll: { devices: [new mongoose.Types.ObjectId(req.params.deviceId)] } })
-          .exec()
-          .then(() => {
-            res.json(true);
-          })
-          .catch(e => next(e));
+        const index = configuration.devices.findIndex(device =>
+          String(device._id) === req.params.deviceId);
+
+        if (index !== -1) {
+          configuration.devices.splice(index, 1);
+          configuration.save()
+            .then(() => {
+              res.json(true);
+            })
+            .catch(e => next(e));
+        } else {
+          const err = new APIError('Device does not exist', httpStatus.BAD_REQUEST, true);
+          next(err);
+        }
+      } else {
+        const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
+        next(err);
+      }
+    })
+    .catch(e => next(e));
+}
+
+/**
+ * Add a controller to a configuration
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function addControllerToConfiguration(req, res, next) {
+  Configuration.findByIdAndUpdate(
+      req.params.id,
+      { $push: { controllers: req.body } },
+      { safe: true, new: true })
+    .exec()
+    .then((result) => {
+      res.json(result.controllers[result.controllers.length - 1]);
+    })
+    .catch(e => next(e));
+}
+
+/**
+ * Remove a controller from a configuration
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function removeControllerFromConfiguration(req, res, next) {
+  Configuration.get(req.params.configId)
+    .then((configuration) => {
+      if (String(configuration.ownedBy._id) === String(req.user._id)) {
+        const index = configuration.controllers.findIndex(controller =>
+          String(controller._id) === req.params.controllerId);
+
+        if (index !== -1) {
+          configuration.controllers.splice(index, 1);
+          configuration.save()
+            .then(() => {
+              res.json(true);
+            })
+            .catch(e => next(e));
+        } else {
+          const err = new APIError('Controller does not exist', httpStatus.BAD_REQUEST, true);
+          next(err);
+        }
       } else {
         const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
         next(err);
@@ -145,5 +202,7 @@ export default {
   addConfiguration,
   addDeviceToConfiguration,
   removeDeviceFromConfiguration,
+  addControllerToConfiguration,
+  removeControllerFromConfiguration,
   deleteConfiguration
 };

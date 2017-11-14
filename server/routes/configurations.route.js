@@ -36,6 +36,20 @@ router.route('/:configId/devices/:deviceId')
     expressJwt({ secret: config.jwtSecret }),
     configurationsCtrl.removeDeviceFromConfiguration);
 
+/** PUT /api/configurations/:id/devices - Add a new controller */
+router.route('/:id/controllers')
+  .put(
+    expressJwt({ secret: config.jwtSecret }),
+    validate(paramValidation.addControllerToConfiguration),
+    configurationsCtrl.addControllerToConfiguration);
+
+/** DELETE /api/configurations/:configId/controllers/:controllerId - Delete a controller */
+router.route('/:configId/controllers/:controllerId')
+  .delete(
+    expressJwt({ secret: config.jwtSecret }),
+    configurationsCtrl.removeControllerFromConfiguration);
+
+
 /** DELETE /api/configurations/:id - Delete a configuration */
 router.route('/:id')
   .delete(expressJwt({ secret: config.jwtSecret }), configurationsCtrl.deleteConfiguration);

@@ -73,5 +73,11 @@ export default {
       address: Joi.string().required(),
       defaultValue: Joi.number(),
     }
+  },
+
+  addControllerToConfiguration: {
+    body: {
+      type: Joi.string().required()
+    }
   }
 };

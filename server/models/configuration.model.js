@@ -6,6 +6,10 @@ import APIError from '../helpers/APIError';
  * Device configuration Schema
  */
 export const DeviceConfigurationSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
   type: {
     type: String,
     required: true
@@ -27,8 +31,12 @@ export const DeviceConfigurationSchema = new mongoose.Schema({
  * Schedule configuration Schema
  */
 const ScheduleConfigurationSchema = new mongoose.Schema({
-  dateTime: Number,
+  dateTime: String,
   actuators: [{
+    type: Number,
+    default: []
+  }],
+  actuatorStates: [{
     type: Number,
     default: []
   }]
@@ -38,19 +46,26 @@ const ScheduleConfigurationSchema = new mongoose.Schema({
  * Controller configuration Schema
  */
 export const ControllerConfigurationSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
   type: {
     type: String,
     required: true
   },
   inputs: [{
-    type: Number,
+    type: String,
     default: []
   }],
   outputs: [{
-    type: Number,
+    type: String,
     default: []
   }],
-  schedule: ScheduleConfigurationSchema
+  schedule: [{
+    type: ScheduleConfigurationSchema,
+    default: []
+  }]
 });
 
 /**
