@@ -101,7 +101,7 @@ function addGatewayToProject(req, res, next) {
 function removeGatewayFromProject(req, res, next) {
   Project.get(req.params.projectId)
     .then((project) => {
-      if (String(project.ownedBy) === String(req.user._id)) {
+      if (String(project.ownedBy._id) === String(req.user._id)) {
         Project
           .update({ _id: project._id }, { $pullAll: { gateways: [req.params.gatewayId] } })
           .exec()
