@@ -97,4 +97,31 @@ function deleteGateway(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { get, getAll, addGateway, deleteGateway };
+/**
+ * Link a configuration to a gateway
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function linkConfiguration(req, res, next) {
+  Gateway
+  .findById(req.params.gatewayId)
+  .exec()
+  .then((gateway) => {
+    if (String(gateway.ownedBy) === String(req.user._id)) {
+      gateway.configuration = req.params.configId;
+      gateway.save()
+        .then(() => {
+          res.json(true);
+        })
+        .catch(e => next(e));
+    } else {
+      const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
+      next(err);
+    }
+  })
+  .catch(e => next(e));
+}
+
+export default { get, getAll, addGateway, deleteGateway, linkConfiguration };

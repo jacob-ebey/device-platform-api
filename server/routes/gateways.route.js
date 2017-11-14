@@ -29,4 +29,11 @@ router.route('/:id')
     validate(paramValidation.deleteProject),
     gatewaysCtrl.deleteGateway);
 
+/** PUT /api/gateways/:id - Link a configuration to a gateway */
+router.route('/:gatewayId/config/:configId')
+  .put(
+    expressJwt({ secret: config.jwtSecret }),
+    validate(paramValidation.linkConfiguration),
+    gatewaysCtrl.linkConfiguration);
+
 export default router;

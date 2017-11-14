@@ -16,6 +16,10 @@ const GatewaySchema = new mongoose.Schema({
   registrationCode: {
     type: String
   },
+  configuration: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Configuration'
+  },
   ownedBy: {
     required: true,
     type: mongoose.Schema.Types.ObjectId,

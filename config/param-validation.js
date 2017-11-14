@@ -53,6 +53,13 @@ export default {
     }
   },
 
+  linkConfiguration: {
+    params: {
+      gatewayId: Joi.string().required(),
+      configId: Joi.string().required()
+    }
+  },
+
   addConfiguration: {
     body: {
       name: Joi.string().required()

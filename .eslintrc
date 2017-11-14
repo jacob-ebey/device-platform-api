@@ -28,6 +28,7 @@
         "devDependencies": true
       }
     ],
+    "no-param-reassign": "off",
     "no-underscore-dangle": [
       0
     ]
