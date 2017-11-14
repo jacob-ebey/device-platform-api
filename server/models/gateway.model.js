@@ -57,6 +57,7 @@ GatewaySchema.statics = {
   get(id) {
     return this.findById(id)
       .populate('ownedBy', 'username')
+      .populate('configuration', 'name')
       .exec()
       .then((gateway) => {
         if (gateway) {

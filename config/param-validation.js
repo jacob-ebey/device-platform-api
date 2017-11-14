@@ -64,5 +64,14 @@ export default {
     body: {
       name: Joi.string().required()
     }
+  },
+
+  addDeviceToConfiguration: {
+    body: {
+      type: Joi.string().required(),
+      mode: Joi.string().required(),
+      address: Joi.string().required(),
+      defaultValue: Joi.number(),
+    }
   }
 };

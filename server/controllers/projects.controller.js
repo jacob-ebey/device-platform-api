@@ -92,7 +92,7 @@ function addGatewayToProject(req, res, next) {
 }
 
 /**
- * Create a gateway to a project
+ * Remove a gateway from a project
  * @param req
  * @param res
  * @param next
@@ -101,13 +101,18 @@ function addGatewayToProject(req, res, next) {
 function removeGatewayFromProject(req, res, next) {
   Project.get(req.params.projectId)
     .then((project) => {
-      Project
-        .update({ _id: project._id }, { $pullAll: { gateways: [req.params.gatewayId] } })
-        .exec()
-        .then(() => {
-          res.json(true);
-        })
-        .catch(e => next(e));
+      if (String(project.ownedBy) === String(req.user._id)) {
+        Project
+          .update({ _id: project._id }, { $pullAll: { gateways: [req.params.gatewayId] } })
+          .exec()
+          .then(() => {
+            res.json(true);
+          })
+          .catch(e => next(e));
+      } else {
+        const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
+        next(err);
+      }
     })
     .catch(e => next(e));
 }

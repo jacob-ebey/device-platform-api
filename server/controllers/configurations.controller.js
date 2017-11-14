@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
 import Configuration from '../models/configuration.model';
@@ -66,6 +67,53 @@ function addConfiguration(req, res, next) {
 }
 
 /**
+ * Add a device to a configuration
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function addDeviceToConfiguration(req, res, next) {
+  Configuration.findByIdAndUpdate(
+      req.params.id,
+      { $push: { devices: req.body } },
+      { safe: true, new: true })
+    .exec()
+    .then((result) => {
+      res.json(result.devices[result.devices.length - 1]);
+    })
+    .catch(e => next(e));
+}
+
+/**
+ * Remove a device from a configuration
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function removeDeviceFromConfiguration(req, res, next) {
+  Configuration.get(req.params.configId)
+    .then((configuration) => {
+      if (String(configuration.ownedBy._id) === String(req.user._id)) {
+        Configuration
+          .update(
+            { _id: req.params.configId },
+            { $pullAll: { devices: [new mongoose.Types.ObjectId(req.params.deviceId)] } })
+          .exec()
+          .then(() => {
+            res.json(true);
+          })
+          .catch(e => next(e));
+      } else {
+        const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
+        next(err);
+      }
+    })
+    .catch(e => next(e));
+}
+
+/**
  * Delete a configuration
  * @param req
  * @param res
@@ -91,4 +139,11 @@ function deleteConfiguration(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { get, getAll, addConfiguration, deleteConfiguration };
+export default {
+  get,
+  getAll,
+  addConfiguration,
+  addDeviceToConfiguration,
+  removeDeviceFromConfiguration,
+  deleteConfiguration
+};

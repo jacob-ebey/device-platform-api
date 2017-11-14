@@ -23,6 +23,19 @@ router.route('/')
     validate(paramValidation.addConfiguration),
     configurationsCtrl.addConfiguration);
 
+/** PUT /api/configurations/:id/devices - Add a new device */
+router.route('/:id/devices')
+  .put(
+    expressJwt({ secret: config.jwtSecret }),
+    validate(paramValidation.addDeviceToConfiguration),
+    configurationsCtrl.addDeviceToConfiguration);
+
+/** DELETE /api/configurations/:configId/devices/:deviceId - Delete a device */
+router.route('/:configId/devices/:deviceId')
+  .delete(
+    expressJwt({ secret: config.jwtSecret }),
+    configurationsCtrl.removeDeviceFromConfiguration);
+
 /** DELETE /api/configurations/:id - Delete a configuration */
 router.route('/:id')
   .delete(expressJwt({ secret: config.jwtSecret }), configurationsCtrl.deleteConfiguration);
