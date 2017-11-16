@@ -1,8 +1,9 @@
-import mongoose from 'mongoose';
 import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
 import Configuration from '../models/configuration.model';
 import User from '../models/user.model';
+
+import configurations from '../repos/configurations';
 
 /**
  * Get a specific configuration
@@ -12,9 +13,10 @@ import User from '../models/user.model';
  * @returns {*}
  */
 function get(req, res, next) {
-  Configuration.get(req.params.id)
-    .then((project) => {
-      res.json(project);
+  configurations
+    .get(req.user._id, req.params.id)
+    .then((config) => {
+      res.json(config);
     })
     .catch(e => next(e));
 }
@@ -27,13 +29,12 @@ function get(req, res, next) {
  * @returns {*}
  */
 function getAll(req, res, next) {
-  User.getConfigurations(req.user._id, (error, configurations) => {
-    if (error) {
-      return next(error);
-    }
-
-    return res.json(configurations);
-  });
+  configurations
+    .getAll(req.user._id)
+    .then((configs) => {
+      res.json(configs);
+    })
+    .catch(e => next(e));
 }
 
 /**
@@ -74,15 +75,26 @@ function addConfiguration(req, res, next) {
  * @returns {*}
  */
 function addDeviceToConfiguration(req, res, next) {
-  Configuration.findByIdAndUpdate(
-      req.params.id,
-      { $push: { devices: req.body } },
-      { safe: true, new: true })
-    .exec()
-    .then((result) => {
-      res.json(result.devices[result.devices.length - 1]);
+  configurations.addDevice(req.user._id, req.params.id, req.body)
+    .then((newDevice) => {
+      res.json(newDevice);
     })
     .catch(e => next(e));
+}
+
+/**
+ * Edit a device from a configuration
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function editDevice(req, res, next) {
+  configurations.editDevice(req.user._id, req.params.configId, req.params.deviceId, req.body)
+  .then((editedDevice) => {
+    res.json(editedDevice);
+  })
+  .catch(e => next(e));
 }
 
 /**
@@ -93,27 +105,10 @@ function addDeviceToConfiguration(req, res, next) {
  * @returns {*}
  */
 function removeDeviceFromConfiguration(req, res, next) {
-  Configuration.get(req.params.configId)
-    .then((configuration) => {
-      if (String(configuration.ownedBy._id) === String(req.user._id)) {
-        const index = configuration.devices.findIndex(device =>
-          String(device._id) === req.params.deviceId);
-
-        if (index !== -1) {
-          configuration.devices.splice(index, 1);
-          configuration.save()
-            .then(() => {
-              res.json(true);
-            })
-            .catch(e => next(e));
-        } else {
-          const err = new APIError('Device does not exist', httpStatus.BAD_REQUEST, true);
-          next(err);
-        }
-      } else {
-        const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
-        next(err);
-      }
+  configurations
+    .deleteDevice(req.user._id, req.params.configId, req.params.deviceId)
+    .then((result) => {
+      res.json(result);
     })
     .catch(e => next(e));
 }
@@ -126,15 +121,30 @@ function removeDeviceFromConfiguration(req, res, next) {
  * @returns {*}
  */
 function addControllerToConfiguration(req, res, next) {
-  Configuration.findByIdAndUpdate(
-      req.params.id,
-      { $push: { controllers: req.body } },
-      { safe: true, new: true })
-    .exec()
-    .then((result) => {
-      res.json(result.controllers[result.controllers.length - 1]);
+  configurations.addController(req.user._id, req.params.id, req.body)
+    .then((newController) => {
+      res.json(newController);
     })
     .catch(e => next(e));
+}
+
+/**
+ * Edit a controller from a configuration
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function editController(req, res, next) {
+  configurations.editController(
+    req.user._id,
+    req.params.configId,
+    req.params.controllerId, req.body
+  )
+  .then((editedDevice) => {
+    res.json(editedDevice);
+  })
+  .catch(e => next(e));
 }
 
 /**
@@ -145,27 +155,10 @@ function addControllerToConfiguration(req, res, next) {
  * @returns {*}
  */
 function removeControllerFromConfiguration(req, res, next) {
-  Configuration.get(req.params.configId)
-    .then((configuration) => {
-      if (String(configuration.ownedBy._id) === String(req.user._id)) {
-        const index = configuration.controllers.findIndex(controller =>
-          String(controller._id) === req.params.controllerId);
-
-        if (index !== -1) {
-          configuration.controllers.splice(index, 1);
-          configuration.save()
-            .then(() => {
-              res.json(true);
-            })
-            .catch(e => next(e));
-        } else {
-          const err = new APIError('Controller does not exist', httpStatus.BAD_REQUEST, true);
-          next(err);
-        }
-      } else {
-        const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
-        next(err);
-      }
+  configurations
+    .deleteController(req.user._id, req.params.configId, req.params.controllerId)
+    .then((result) => {
+      res.json(result);
     })
     .catch(e => next(e));
 }
@@ -201,8 +194,10 @@ export default {
   getAll,
   addConfiguration,
   addDeviceToConfiguration,
+  editDevice,
   removeDeviceFromConfiguration,
   addControllerToConfiguration,
+  editController,
   removeControllerFromConfiguration,
   deleteConfiguration
 };

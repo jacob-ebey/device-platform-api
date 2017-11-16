@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
 
 /**
- * Device configuration Schema
+ * Device Configuration Schema
  */
 export const DeviceConfigurationSchema = new mongoose.Schema({
   name: {
@@ -28,7 +28,12 @@ export const DeviceConfigurationSchema = new mongoose.Schema({
 });
 
 /**
- * Schedule configuration Schema
+ * Device Configuration
+ */
+export const DeviceConfiguration = mongoose.model('DeviceConfiguration', DeviceConfigurationSchema);
+
+/**
+ * Schedule Configuration Schema
  */
 const ScheduleConfigurationSchema = new mongoose.Schema({
   dateTime: String,
@@ -43,7 +48,7 @@ const ScheduleConfigurationSchema = new mongoose.Schema({
 });
 
 /**
- * Controller configuration Schema
+ * Controller Configuration Schema
  */
 export const ControllerConfigurationSchema = new mongoose.Schema({
   name: {
@@ -69,6 +74,11 @@ export const ControllerConfigurationSchema = new mongoose.Schema({
 });
 
 /**
+ * Controller Configuration
+ */
+export const ControllerConfiguration = mongoose.model('ControllerConfiguration', ControllerConfigurationSchema);
+
+/**
  * Configuration Schema
  */
 const ConfigurationSchema = new mongoose.Schema({
@@ -87,11 +97,13 @@ const ConfigurationSchema = new mongoose.Schema({
   },
   sharedWith: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   devices: [{
-    type: DeviceConfigurationSchema,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'DeviceConfiguration',
     default: []
   }],
   controllers: [{
-    type: ControllerConfigurationSchema,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ControllerConfiguration',
     default: []
   }]
 });
@@ -121,6 +133,8 @@ ConfigurationSchema.statics = {
   get(id) {
     return this.findById(id)
       .populate('ownedBy', 'username')
+      .populate('devices')
+      .populate('controllers')
       .exec()
       .then((project) => {
         if (project) {
@@ -129,7 +143,7 @@ ConfigurationSchema.statics = {
         const err = new APIError('No such project exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
       });
-  },
+  }
 };
 
 /**

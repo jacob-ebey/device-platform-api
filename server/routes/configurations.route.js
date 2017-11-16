@@ -30,6 +30,12 @@ router.route('/:id/devices')
     validate(paramValidation.addDeviceToConfiguration),
     configurationsCtrl.addDeviceToConfiguration);
 
+/** PUT /api/configurations/:configId/devices/:deviceId - Edit a device */
+router.route('/:configId/devices/:deviceId')
+  .put(
+    expressJwt({ secret: config.jwtSecret }),
+    configurationsCtrl.editDevice);
+
 /** DELETE /api/configurations/:configId/devices/:deviceId - Delete a device */
 router.route('/:configId/devices/:deviceId')
   .delete(
@@ -42,6 +48,12 @@ router.route('/:id/controllers')
     expressJwt({ secret: config.jwtSecret }),
     validate(paramValidation.addControllerToConfiguration),
     configurationsCtrl.addControllerToConfiguration);
+
+/** PUT /api/configurations/:configId/controllers/:controllerId - Edit a controller */
+router.route('/:configId/controllers/:controllerId')
+  .put(
+    expressJwt({ secret: config.jwtSecret }),
+    configurationsCtrl.editController);
 
 /** DELETE /api/configurations/:configId/controllers/:controllerId - Delete a controller */
 router.route('/:configId/controllers/:controllerId')
