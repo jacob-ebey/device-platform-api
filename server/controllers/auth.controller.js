@@ -13,23 +13,28 @@ import User from '../models/user.model';
  * @returns {*}
  */
 function login(req, res, next) {
-  User.findOne({ username: req.body.username }, (error, user) => {
-    bcrypt.compare(req.body.password, user.password, (result, success) => {
-      if (success) {
-        const token = jwt.sign({
-          username: user.username,
-          _id: user._id
-        }, config.jwtSecret);
-        return res.json({
-          token,
-          username: user.username
-        });
-      }
+  if (req.body) {
+    User.findOne({ username: req.body.username }, (error, user) => {
+      bcrypt.compare(req.body.password, user.password, (result, success) => {
+        if (success) {
+          const token = jwt.sign({
+            username: user.username,
+            _id: user._id
+          }, config.jwtSecret);
+          res.json({
+            token,
+            username: user.username
+          });
+        }
 
-      const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
-      return next(err);
+        const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
+        return next(err);
+      });
     });
-  });
+  } else {
+    const err = new APIError('No info provided', httpStatus.BAD_REQUEST, true);
+    next(err);
+  }
 }
 
 /**
