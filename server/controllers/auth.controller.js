@@ -16,7 +16,7 @@ function login(req, res, next) {
   if (req.body) {
     User.findOne({ username: req.body.username }, (error, user) => {
       if (error || !user) {
-        const err = new APIError(error || 'User not found', httpStatus.BAD_REQUEST, true);
+        const err = new APIError(error || 'Username or password is not correct', httpStatus.BAD_REQUEST, true);
         next(err);
         return;
       }
@@ -32,7 +32,7 @@ function login(req, res, next) {
             username: user.username
           });
         } else {
-          const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
+          const err = new APIError('Username or password is not correct', httpStatus.UNAUTHORIZED, true);
           next(err);
         }
       });
