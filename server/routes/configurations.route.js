@@ -23,6 +23,13 @@ router.route('/')
     validate(paramValidation.addConfiguration),
     configurationsCtrl.add);
 
+/** PUT /api/configurations/:id - Edit a configuration */
+router.route('/:id')
+  .put(
+    expressJwt({ secret: config.jwtSecret }),
+    validate(paramValidation.editConfiguration),
+    configurationsCtrl.edit);
+
 /** PUT /api/configurations/:id/devices - Add a new device */
 router.route('/:id/devices')
   .put(

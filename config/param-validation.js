@@ -66,6 +66,15 @@ export default {
     }
   },
 
+  editConfiguration: {
+    params: {
+      id: Joi.string().required()
+    },
+    body: {
+      name: Joi.string().required()
+    }
+  },
+
   addDevice: {
     body: {
       type: Joi.string().required(),

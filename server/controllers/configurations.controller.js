@@ -49,6 +49,38 @@ function add(req, res, next) {
 }
 
 /**
+ * Edit a configuration
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function edit(req, res, next) {
+  configurations
+    .edit(req.user._id, req.params.id, req.body)
+    .then((newConfig) => {
+      res.json(newConfig);
+    })
+    .catch(e => next(e));
+}
+
+/**
+ * Remove a configuration
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function remove(req, res, next) {
+  configurations
+    .remove(req.user._id, req.params.id)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch(e => next(e));
+}
+
+/**
  * Add a device to a configuration
  * @param req
  * @param res
@@ -144,31 +176,16 @@ function removeController(req, res, next) {
     .catch(e => next(e));
 }
 
-/**
- * Delete a configuration
- * @param req
- * @param res
- * @param next
- * @returns {*}
- */
-function remove(req, res, next) {
-  configurations
-    .remove(req.user._id, req.params.id)
-    .then((result) => {
-      res.json(result);
-    })
-    .catch(e => next(e));
-}
-
 export default {
   get,
   getAll,
   add,
+  edit,
+  remove,
   addDevice,
   editDevice,
   removeDevice,
   addController,
   editController,
-  removeController,
-  remove
+  removeController
 };
