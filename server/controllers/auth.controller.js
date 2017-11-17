@@ -15,8 +15,8 @@ import User from '../models/user.model';
 function login(req, res, next) {
   if (req.body) {
     User.findOne({ username: req.body.username }, (error, user) => {
-      if (error) {
-        const err = new APIError(error, httpStatus.BAD_REQUEST, true);
+      if (error || !user) {
+        const err = new APIError(error || 'User not found', httpStatus.BAD_REQUEST, true);
         next(err);
         return;
       }
