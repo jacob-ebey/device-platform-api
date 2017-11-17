@@ -31,14 +31,14 @@ function login(req, res, next) {
             token,
             username: user.username
           });
+        } else {
+          const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
+          next(err);
         }
-
-        const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
-        return next(err);
       });
     });
   } else {
-    const err = new APIError('No info provided', httpStatus.BAD_REQUEST, true);
+    const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
     next(err);
   }
 }
