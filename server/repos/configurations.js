@@ -89,7 +89,7 @@ export default {
     });
   },
 
-  delete(userId, configId) {
+  remove(userId, configId) {
     return new Promise((resolve, reject) => {
       User
         .findById(userId)

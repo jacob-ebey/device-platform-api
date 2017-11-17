@@ -21,14 +21,14 @@ router.route('/')
   .post(
     expressJwt({ secret: config.jwtSecret }),
     validate(paramValidation.addConfiguration),
-    configurationsCtrl.addConfiguration);
+    configurationsCtrl.add);
 
 /** PUT /api/configurations/:id/devices - Add a new device */
 router.route('/:id/devices')
   .put(
     expressJwt({ secret: config.jwtSecret }),
-    validate(paramValidation.addDeviceToConfiguration),
-    configurationsCtrl.addDeviceToConfiguration);
+    validate(paramValidation.addDevice),
+    configurationsCtrl.addDevice);
 
 /** PUT /api/configurations/:configId/devices/:deviceId - Edit a device */
 router.route('/:configId/devices/:deviceId')
@@ -40,14 +40,14 @@ router.route('/:configId/devices/:deviceId')
 router.route('/:configId/devices/:deviceId')
   .delete(
     expressJwt({ secret: config.jwtSecret }),
-    configurationsCtrl.removeDeviceFromConfiguration);
+    configurationsCtrl.removeDevice);
 
 /** PUT /api/configurations/:id/devices - Add a new controller */
 router.route('/:id/controllers')
   .put(
     expressJwt({ secret: config.jwtSecret }),
-    validate(paramValidation.addControllerToConfiguration),
-    configurationsCtrl.addControllerToConfiguration);
+    validate(paramValidation.addController),
+    configurationsCtrl.addController);
 
 /** PUT /api/configurations/:configId/controllers/:controllerId - Edit a controller */
 router.route('/:configId/controllers/:controllerId')
@@ -59,11 +59,13 @@ router.route('/:configId/controllers/:controllerId')
 router.route('/:configId/controllers/:controllerId')
   .delete(
     expressJwt({ secret: config.jwtSecret }),
-    configurationsCtrl.removeControllerFromConfiguration);
+    configurationsCtrl.removeController);
 
 
 /** DELETE /api/configurations/:id - Delete a configuration */
 router.route('/:id')
-  .delete(expressJwt({ secret: config.jwtSecret }), configurationsCtrl.deleteConfiguration);
+  .delete(
+    expressJwt({ secret: config.jwtSecret }),
+    configurationsCtrl.remove);
 
 export default router;

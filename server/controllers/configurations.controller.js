@@ -33,13 +33,13 @@ function getAll(req, res, next) {
 }
 
 /**
- * Create a new project
+ * Create a new configuration
  * @param req
  * @param res
  * @param next
  * @returns {*}
  */
-function addConfiguration(req, res, next) {
+function add(req, res, next) {
   configurations
     .add(req.user._id, req.body)
     .then((newConfig) => {
@@ -55,7 +55,7 @@ function addConfiguration(req, res, next) {
  * @param next
  * @returns {*}
  */
-function addDeviceToConfiguration(req, res, next) {
+function addDevice(req, res, next) {
   configurations
     .addDevice(req.user._id, req.params.id, req.body)
     .then((newDevice) => {
@@ -87,7 +87,7 @@ function editDevice(req, res, next) {
  * @param next
  * @returns {*}
  */
-function removeDeviceFromConfiguration(req, res, next) {
+function removeDevice(req, res, next) {
   configurations
     .deleteDevice(req.user._id, req.params.configId, req.params.deviceId)
     .then((result) => {
@@ -103,7 +103,7 @@ function removeDeviceFromConfiguration(req, res, next) {
  * @param next
  * @returns {*}
  */
-function addControllerToConfiguration(req, res, next) {
+function addController(req, res, next) {
   configurations
     .addController(req.user._id, req.params.id, req.body)
     .then((newController) => {
@@ -135,7 +135,7 @@ function editController(req, res, next) {
  * @param next
  * @returns {*}
  */
-function removeControllerFromConfiguration(req, res, next) {
+function removeController(req, res, next) {
   configurations
     .deleteController(req.user._id, req.params.configId, req.params.controllerId)
     .then((result) => {
@@ -151,9 +151,9 @@ function removeControllerFromConfiguration(req, res, next) {
  * @param next
  * @returns {*}
  */
-function deleteConfiguration(req, res, next) {
+function remove(req, res, next) {
   configurations
-    .delete(req.user._id, req.params.id)
+    .remove(req.user._id, req.params.id)
     .then((result) => {
       res.json(result);
     })
@@ -163,12 +163,12 @@ function deleteConfiguration(req, res, next) {
 export default {
   get,
   getAll,
-  addConfiguration,
-  addDeviceToConfiguration,
+  add,
+  addDevice,
   editDevice,
-  removeDeviceFromConfiguration,
-  addControllerToConfiguration,
+  removeDevice,
+  addController,
   editController,
-  removeControllerFromConfiguration,
-  deleteConfiguration
+  removeController,
+  remove
 };

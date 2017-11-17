@@ -66,7 +66,7 @@ export default {
     }
   },
 
-  addDeviceToConfiguration: {
+  addDevice: {
     body: {
       type: Joi.string().required(),
       mode: Joi.string().required(),
@@ -75,7 +75,7 @@ export default {
     }
   },
 
-  addControllerToConfiguration: {
+  addController: {
     body: {
       type: Joi.string().required()
     }
