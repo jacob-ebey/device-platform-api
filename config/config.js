@@ -21,7 +21,9 @@ const envVarsSchema = Joi.object({
   MONGO_HOST: Joi.string().required()
     .description('Mongo DB host url'),
   MONGO_PORT: Joi.number()
-    .default(27017)
+    .default(27017),
+  IOT_CONNECTION: Joi.string().required()
+    .description('Connection string for IOT Hub')
 }).unknown()
   .required();
 
