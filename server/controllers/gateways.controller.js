@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
 import User from '../models/user.model';
 import Gateway from '../models/gateway.model';
+import gateways from '../repos/gateways';
 
 /**
  * Get a specific gateway
@@ -124,4 +125,40 @@ function linkConfiguration(req, res, next) {
   .catch(e => next(e));
 }
 
-export default { get, getAll, addGateway, deleteGateway, linkConfiguration };
+/**
+ * Register a physical device to a gateway
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function registerGateway(req, res, next) {
+  gateways
+    .registerGateway(req.user._id, req.body.gatewayId, req.body.registrationCode)
+    .then(result => res.json(result))
+    .catch(e => next(e));
+}
+
+/**
+ * Unregister a physical device from a gateway
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function unregisterGateway(req, res, next) {
+  gateways
+    .unregisterGateway(req.user._id, req.params.id)
+    .then(result => res.json(result))
+    .catch(e => next(e));
+}
+
+export default {
+  get,
+  getAll,
+  addGateway,
+  deleteGateway,
+  linkConfiguration,
+  registerGateway,
+  unregisterGateway
+};

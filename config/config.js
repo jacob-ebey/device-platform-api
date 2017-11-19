@@ -40,7 +40,8 @@ const config = {
   mongo: {
     host: envVars.MONGO_HOST,
     port: envVars.MONGO_PORT
-  }
+  },
+  iotHubConnectionString: envVars.IOT_CONNECTION
 };
 
 export default config;

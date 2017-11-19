@@ -10,9 +10,6 @@ const GatewaySchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  iotId: {
-    type: String
-  },
   registrationCode: {
     type: String
   },

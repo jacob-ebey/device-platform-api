@@ -60,6 +60,19 @@ export default {
     }
   },
 
+  registerGateway: {
+    body: {
+      gatewayId: Joi.string().required(),
+      registrationCode: Joi.string().required()
+    }
+  },
+
+  unregisterGateway: {
+    params: {
+      id: Joi.string().required()
+    }
+  },
+
   addConfiguration: {
     body: {
       name: Joi.string().required()

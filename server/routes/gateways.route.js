@@ -36,4 +36,18 @@ router.route('/:gatewayId/config/:configId')
     validate(paramValidation.linkConfiguration),
     gatewaysCtrl.linkConfiguration);
 
+/** POST /api/gateways/register - Register a physical device to a gateway */
+router.route('/register')
+  .post(
+    expressJwt({ secret: config.jwtSecret }),
+    validate(paramValidation.registerGateway),
+    gatewaysCtrl.registerGateway);
+
+/** POST /api/gateways/unregister/:id - Unregister a physical device from a gateway */
+router.route('/unregister/:id')
+  .delete(
+    expressJwt({ secret: config.jwtSecret }),
+    validate(paramValidation.unregisterGateway),
+    gatewaysCtrl.unregisterGateway);
+
 export default router;
