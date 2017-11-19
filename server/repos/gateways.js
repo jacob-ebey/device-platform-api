@@ -4,6 +4,7 @@ import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
 import config from '../../config/config';
 import Gateway from '../models/gateway.model';
+import configurations from './configurations';
 
 const registry = iothub.Registry.fromConnectionString(config.iotHubConnectionString);
 
@@ -11,7 +12,7 @@ export default {
   registerGateway(userId, gatewayId, registrationCode) {
     return new Promise((resolve, reject) => {
       Gateway
-        .findOne({ _id: gatewayId }, 'iotId registrationCode ownedBy')
+        .findOne({ _id: gatewayId }, 'registrationCode ownedBy')
         .exec()
         .then((gateway) => {
           if (String(gateway.ownedBy) === String(userId)) {
@@ -47,7 +48,7 @@ export default {
   unregisterGateway(userId, gatewayId) {
     return new Promise((resolve, reject) => {
       Gateway
-        .findOne({ _id: gatewayId }, 'iotId registrationCode ownedBy')
+        .findOne({ _id: gatewayId }, 'registrationCode ownedBy')
         .exec()
         .then((gateway) => {
           if (String(gateway.ownedBy) === String(userId)) {
@@ -74,6 +75,25 @@ export default {
           }
         })
         .catch(() => reject(new APIError('Gateway not found', httpStatus.BAD_REQUEST, true)));
+    });
+  },
+
+  getConfig(userId, gatewayId) {
+    return new Promise((resolve, reject) => {
+      Gateway
+      .findOne({ _id: gatewayId }, 'ownedBy configuration')
+      .exec()
+      .then((gateway) => {
+        if (String(gateway.ownedBy) === String(userId)) {
+          configurations
+            .get(userId, gateway.configuration)
+            .then(configuration => resolve(configuration))
+            .catch(e => reject(e));
+        } else {
+          reject(new APIError('User does not have access to the gateway', httpStatus.BAD_REQUEST, true));
+        }
+      })
+      .catch(() => reject(new APIError('Gateway not found', httpStatus.BAD_REQUEST, true)));
     });
   }
 };

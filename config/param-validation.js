@@ -73,6 +73,12 @@ export default {
     }
   },
 
+  getConfigForGateway: {
+    params: {
+      id: Joi.string().required()
+    }
+  },
+
   addConfiguration: {
     body: {
       name: Joi.string().required()

@@ -50,4 +50,11 @@ router.route('/unregister/:id')
     validate(paramValidation.unregisterGateway),
     gatewaysCtrl.unregisterGateway);
 
+/** GET /api/gateways/:id/config - Get the configuration for a gateway */
+router.route('/:id/config')
+  .get(
+    expressJwt({ secret: config.jwtSecret }),
+    validate(paramValidation.getConfigForGateway),
+    gatewaysCtrl.getConfig);
+
 export default router;

@@ -25,7 +25,8 @@ export default {
         .findById(userId)
         .exec()
         .then((user) => {
-          const ownsConfig = user.ownedConfigurations.some(config => String(config) === configId);
+          const ownsConfig = user.ownedConfigurations
+            .some(config => String(config) === String(configId));
 
           if (ownsConfig) {
             Configuration
@@ -70,7 +71,8 @@ export default {
         .findById(userId)
         .exec()
         .then((user) => {
-          const ownsConfig = user.ownedConfigurations.some(config => String(config) === configId);
+          const ownsConfig = user.ownedConfigurations
+            .some(config => String(config) === String(configId));
 
           if (ownsConfig) {
             Configuration.findByIdAndUpdate(

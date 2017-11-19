@@ -153,6 +153,20 @@ function unregisterGateway(req, res, next) {
     .catch(e => next(e));
 }
 
+/**
+ * Get the confiuration for a gateway
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function getConfig(req, res, next) {
+  gateways
+    .getConfig(req.user._id, req.params.id)
+    .then(result => res.json(result))
+    .catch(e => next(e));
+}
+
 export default {
   get,
   getAll,
@@ -160,5 +174,6 @@ export default {
   deleteGateway,
   linkConfiguration,
   registerGateway,
-  unregisterGateway
+  unregisterGateway,
+  getConfig
 };
