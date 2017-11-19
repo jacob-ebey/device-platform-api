@@ -38,11 +38,7 @@ const wss = new ws.Server({ server });
 wss.on('connection', (socket, req) => {
   const location = url.parse(req.url, true);
 
-  if (location.query.token) {
-    socket.on('message', websockets.handleMessage(location.query.token, socket));
-  } else {
-    socket.close();
-  }
+  socket.on('message', websockets.handleMessage(location.query.token, socket));
 });
 
 // module.parent check is required to support mocha watch

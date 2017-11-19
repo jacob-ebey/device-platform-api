@@ -1,27 +1,28 @@
 import jwt from 'jsonwebtoken';
 
-import monitorGateway from './monitorGateway';
+import gateways from './gateways';
 
 export default {
   handleMessage(token, socket) {
-    const user = jwt.decode(token);
-
-    if (!user) {
-      socket.close();
-      return () => {};
-    }
-
     return (message) => {
       if (message) {
         const data = JSON.parse(message);
 
-        switch (data.event) {
-          case 'monitorGateway': {
-            monitorGateway(socket, user, data);
-            break;
-          }
-          default: {
-            break;
+        const user = jwt.decode(data.token);
+
+        if (user && user._id) {
+          switch (data.event) {
+            case 'monitorGateway': {
+              gateways.monitorGateway(socket, user, data);
+              break;
+            }
+            case 'stopMonitorGateway': {
+              gateways.stopMonitorGateway(socket, user, data);
+              break;
+            }
+            default: {
+              break;
+            }
           }
         }
       }
