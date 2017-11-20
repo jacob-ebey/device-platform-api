@@ -57,4 +57,11 @@ router.route('/:id/config')
     validate(paramValidation.getConfigForGateway),
     gatewaysCtrl.getConfig);
 
+/** GET /api/gateways/:id/logs - Get the logs for a gateway */
+router.route('/:id/logs')
+  .get(
+    expressJwt({ secret: config.jwtSecret }),
+    validate(paramValidation.getLogsForConfiguration),
+    gatewaysCtrl.getLogs);
+
 export default router;

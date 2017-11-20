@@ -4,6 +4,7 @@ import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
 import config from '../../config/config';
 import Gateway from '../models/gateway.model';
+import GatewayLog from '../models/gatewayLog.model';
 import configurations from './configurations';
 
 const registry = iothub.Registry.fromConnectionString(config.iotHubConnectionString);
@@ -81,19 +82,55 @@ export default {
   getConfig(userId, gatewayId) {
     return new Promise((resolve, reject) => {
       Gateway
-      .findOne({ _id: gatewayId }, 'ownedBy configuration')
-      .exec()
-      .then((gateway) => {
-        if (String(gateway.ownedBy) === String(userId)) {
-          configurations
-            .get(userId, gateway.configuration)
-            .then(configuration => resolve(configuration))
-            .catch(e => reject(e));
-        } else {
-          reject(new APIError('User does not have access to the gateway', httpStatus.BAD_REQUEST, true));
-        }
-      })
-      .catch(() => reject(new APIError('Gateway not found', httpStatus.BAD_REQUEST, true)));
+        .findOne({ _id: gatewayId }, 'ownedBy configuration')
+        .exec()
+        .then((gateway) => {
+          if (String(gateway.ownedBy) === String(userId)) {
+            configurations
+              .get(userId, gateway.configuration)
+              .then(configuration => resolve(configuration))
+              .catch(e => reject(e));
+          } else {
+            reject(new APIError('User does not have access to the gateway', httpStatus.BAD_REQUEST, true));
+          }
+        })
+        .catch(() => reject(new APIError('Gateway not found', httpStatus.BAD_REQUEST, true)));
     });
+  },
+
+  getLastLog() {
+    return GatewayLog.lastLog();
+  },
+
+  getLogs(userId, gatewayId, skip = 0, limit = 10) {
+    return new Promise((resolve, reject) => {
+      Gateway
+        .findOne({ _id: gatewayId })
+        .exec()
+        .then((gateway) => {
+          if (String(gateway.ownedBy) === String(userId)) {
+            GatewayLog
+              .get(gatewayId, skip, limit)
+              .then(logs => resolve(logs))
+              .catch(e => reject(e));
+          } else {
+            reject(new APIError('User does not have access to the gateway', httpStatus.BAD_REQUEST, true));
+          }
+        })
+        .catch(() => reject(new APIError('Gateway not found', httpStatus.BAD_REQUEST, true)));
+    });
+  },
+
+  saveLog(gatewayId, message) {
+    const log = new GatewayLog({
+      gatewayId,
+      offset: message.enqueuedTimeUtc,
+      message: message.body
+    });
+
+    return log
+      .save()
+      .then(() => true)
+      .catch(e => console.log(e));
   }
 };

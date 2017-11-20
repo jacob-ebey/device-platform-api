@@ -167,6 +167,20 @@ function getConfig(req, res, next) {
     .catch(e => next(e));
 }
 
+/**
+ * Get the logs for a gateway
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function getLogs(req, res, next) {
+  gateways
+    .getLogs(req.user._id, req.params.id)
+    .then(result => res.json(result))
+    .catch(e => next(e));
+}
+
 export default {
   get,
   getAll,
@@ -175,5 +189,6 @@ export default {
   linkConfiguration,
   registerGateway,
   unregisterGateway,
-  getConfig
+  getConfig,
+  getLogs
 };

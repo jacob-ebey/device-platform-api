@@ -11,14 +11,13 @@ export default {
   login(loginModel) {
     return new Promise((resolve, reject) => {
       if (!loginModel || !loginModel.username || !loginModel.password) {
-        reject(new APIError('Please provide a username and password', httpStatus.BAD_REQUEST, true));
-        return;
+        return reject(new APIError('Please provide a username and password', httpStatus.BAD_REQUEST, true));
       }
 
-      User
+      return User
         .findOne({ username: loginModel.username }, 'username password')
         .exec()
-        .then((user) => {
+        .then(user =>
           bcrypt
             .compare(loginModel.password, user.password)
             .then((match) => {
@@ -36,8 +35,8 @@ export default {
                 reject(new APIError(invalidErrorMessage, httpStatus.UNAUTHORIZED, true));
               }
             })
-            .catch(() => reject(new APIError(invalidErrorMessage, httpStatus.UNAUTHORIZED, true)));
-        })
+            .catch(() => reject(new APIError(invalidErrorMessage, httpStatus.UNAUTHORIZED, true)))
+        )
         .catch(() => reject(new APIError(invalidErrorMessage, httpStatus.UNAUTHORIZED, true)));
     });
   }

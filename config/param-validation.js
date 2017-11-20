@@ -79,6 +79,12 @@ export default {
     }
   },
 
+  getLogsForConfiguration: {
+    params: {
+      id: Joi.string().required()
+    }
+  },
+
   addConfiguration: {
     body: {
       name: Joi.string().required()
