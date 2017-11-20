@@ -20,7 +20,7 @@ const handleMessage = () => (message) => {
 
     Object.keys(sockets).forEach((key) => {
       const socket = sockets[key];
-      if (socket.gatewayId === message.deviceId) {
+      if (socket.gatewayId === message.body.deviceId) {
         socket.socket.send(JSON.stringify({
           event: 'gatewayLog',
           payload: message.body.payload
@@ -56,13 +56,13 @@ client.open()
   .catch(printError);
 
 export default {
-  monitorGateway(socket, user, { gatewayId }) {
+  monitorGateway(socket, user, { id }) {
     // eslint-disable-next-line no-console
-    console.log(`Monitoring of ${gatewayId} requested by ${user.username}`);
+    console.log(`Monitoring of ${id} requested by ${user.username}`);
 
     sockets[user._id] = {
       socket,
-      gatewayId
+      gatewayId: id
     };
   },
 
